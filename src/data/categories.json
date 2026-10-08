@@ -1,0 +1,42 @@
+[
+  {
+    "id": "cat-laptops",
+    "name": "Laptops",
+    "slug": "laptops",
+    "description": "High-performance brand new, certified UK-used, and refurbished business and consumer laptops.",
+    "image_url": "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=600&q=80",
+    "item_count": 6
+  },
+  {
+    "id": "cat-peripherals",
+    "name": "Computer Peripherals",
+    "slug": "peripherals",
+    "description": "Precision mice, ergonomic mechanical keyboards, webcams, and USB-C docks.",
+    "image_url": "https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?auto=format&fit=crop&w=600&q=80",
+    "item_count": 2
+  },
+  {
+    "id": "cat-accessories",
+    "name": "Laptop Accessories",
+    "slug": "accessories",
+    "description": "Original GaN fast chargers, laptop backpacks, cooling pads, and adapter hubs.",
+    "image_url": "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&w=600&q=80",
+    "item_count": 2
+  },
+  {
+    "id": "cat-storage",
+    "name": "Storage & Upgrades",
+    "slug": "storage",
+    "description": "Ultra-fast NVMe PCIe Gen 4 SSDs, external hard drives, and high-speed DDR4/DDR5 RAM.",
+    "image_url": "https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?auto=format&fit=crop&w=600&q=80",
+    "item_count": 2
+  },
+  {
+    "id": "cat-monitors",
+    "name": "Monitors & Displays",
+    "slug": "monitors",
+    "description": "Crisp 4K and FHD displays for programming, graphic design, trading, and office productivity.",
+    "image_url": "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&w=600&q=80",
+    "item_count": 1
+  }
+]

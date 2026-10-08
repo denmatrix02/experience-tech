@@ -1,0 +1,77 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-public-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+@layer base {
+  :root {
+    --font-public-sans: 'Public Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --brand-navy: #0b192c;
+    --brand-navy-light: #1e3e62;
+    --brand-blue: #1e3a8a;
+    --brand-blue-accent: #2563eb;
+    --brand-whatsapp: #25d366;
+    --brand-whatsapp-hover: #1eb956;
+    --surface-bg: #f8fafc;
+    --surface-card: #ffffff;
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #64748b;
+    --border-color: #e2e8f0;
+  }
+
+  * {
+    border-color: var(--border-color);
+  }
+
+  body {
+    font-family: var(--font-public-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: #ffffff;
+    color: var(--text-primary);
+    font-feature-settings: "rlig" 1, "calt" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* Custom utility classes */
+.bg-navy {
+  background-color: #0b192c;
+}
+
+.text-navy {
+  color: #0b192c;
+}
+
+.bg-navy-light {
+  background-color: #1e3e62;
+}
+
+.border-navy {
+  border-color: #0b192c;
+}
+
+.bg-whatsapp {
+  background-color: #25d366;
+}
+
+.hover\:bg-whatsapp-dark:hover {
+  background-color: #1eb956;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
