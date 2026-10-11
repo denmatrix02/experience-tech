@@ -2,7 +2,13 @@ import { MetadataRoute } from 'next';
 import { getServerProducts, getServerCategories } from '@/lib/data/server-store';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://experiencetech.ng';
+  // Priority: explicit env override → Vercel auto-URL → canonical production domain
+  // NEVER use localhost — NEXT_PUBLIC_SITE_URL must be set to https://experiencetech.org in Vercel env settings
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+  const vercelUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null;
+  const baseUrl = (siteUrl && !siteUrl.includes('localhost') ? siteUrl : null)
+    ?? vercelUrl
+    ?? 'https://experiencetech.org';
 
   const [products, categories] = await Promise.all([
     getServerProducts({ publishedOnly: true }),

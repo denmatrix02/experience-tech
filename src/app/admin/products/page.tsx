@@ -66,7 +66,7 @@ export default function AdminProductsPage() {
   };
 
   const getProductCanonicalUrl = (product: Product) => {
-    const origin = typeof window !== 'undefined' ? window.location.origin : 'https://experiencetech.ng';
+    const origin = typeof window !== 'undefined' ? window.location.origin : 'https://experiencetech.org';
     return `${origin}/shop/${product.slug}`;
   };
 
@@ -928,7 +928,7 @@ ${url}`;
               <div className="p-3.5 rounded-[3px] bg-white border border-slate-200 shadow-2xs space-y-1">
                 <div className="flex items-center gap-1.5 text-[11px] text-slate-500 font-mono">
                   <Globe className="w-3 h-3 text-slate-400" />
-                  <span>experiencetech.ng &gt; shop &gt; {shareProduct.slug}</span>
+                  <span>experiencetech.org &gt; shop &gt; {shareProduct.slug}</span>
                 </div>
                 <div className="text-sm font-medium text-blue-800 hover:underline cursor-pointer">
                   {shareProduct.seo_title || `${shareProduct.name} | ExperienceTech Aba`}

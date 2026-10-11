@@ -8,7 +8,7 @@ import {
 } from '@/lib/data/server-store';
 import { getBusinessSettings } from '@/lib/data/store';
 import { ProductDetailClient } from '@/components/shop/ProductDetailClient';
-import { generateProductSchema, generateBreadcrumbSchema } from '@/lib/seo';
+import { generateProductSchema, generateBreadcrumbSchema, SITE_URL } from '@/lib/seo';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -41,7 +41,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title,
       description,
       images: product.images && product.images.length > 0 ? [product.images[0]] : [],
-      url: `https://experiencetech.ng/shop/${product.slug}`,
+      url: `${SITE_URL}/shop/${product.slug}`,
       type: 'website',
     },
   };

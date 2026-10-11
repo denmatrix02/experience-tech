@@ -927,7 +927,7 @@ export const ProductFormModal: React.FC<ProductFormModalProps> = ({
                     <button
                       type="button"
                       onClick={async () => {
-                        const origin = typeof window !== 'undefined' ? window.location.origin : 'https://experiencetech.ng';
+                        const origin = typeof window !== 'undefined' ? window.location.origin : 'https://experiencetech.org';
                         const fullUrl = `${origin}/shop/${slug}`;
                         await navigator.clipboard.writeText(fullUrl);
                         setCopiedSlug(true);

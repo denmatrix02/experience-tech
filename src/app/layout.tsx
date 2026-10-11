@@ -15,7 +15,7 @@ const publicSans = Public_Sans({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://experiencetech.ng'),
+  metadataBase: new URL('https://experiencetech.org'),
   title: {
     default: 'ExperienceTech | Quality Laptops, Accessories & Repairs in Aba, Abia State',
     template: '%s | ExperienceTech',
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
     title: 'ExperienceTech | Quality Laptops & Technical Repairs in Aba',
     description:
       'Verified laptops, genuine accessories, component-level repair diagnostics, and technical services at 37B St. Michael Road, Aba, Abia State.',
-    url: 'https://experiencetech.ng',
+    url: 'https://experiencetech.org',
     siteName: 'ExperienceTech',
     locale: 'en_NG',
     type: 'website',

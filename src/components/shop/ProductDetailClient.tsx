@@ -271,7 +271,7 @@ export const ProductDetailClient: React.FC<ProductDetailClientProps> = ({
               <button
                 type="button"
                 onClick={async () => {
-                  const url = typeof window !== 'undefined' ? window.location.href : `https://experiencetech.ng/shop/${product.slug}`;
+                  const url = typeof window !== 'undefined' ? window.location.href : `https://experiencetech.org/shop/${product.slug}`;
                   try {
                     await navigator.clipboard.writeText(url);
                     setLinkCopied(true);

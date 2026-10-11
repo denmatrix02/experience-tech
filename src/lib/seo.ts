@@ -1,7 +1,14 @@
 import { Product, BusinessSettings, FAQ } from '@/types';
 import { initialBusinessSettings } from './data/initial-data';
 
-export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://experiencetech.ng';
+// Guard against localhost leaking into structured data and canonical URLs.
+// Set NEXT_PUBLIC_SITE_URL=https://experiencetech.org in Vercel Project Settings.
+const _rawSiteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+const _vercelUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null;
+export const SITE_URL =
+  (_rawSiteUrl && !_rawSiteUrl.includes('localhost') ? _rawSiteUrl : null)
+  ?? _vercelUrl
+  ?? 'https://experiencetech.org';
 
 /**
  * Generates Google LocalBusiness JSON-LD structured data
