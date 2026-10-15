@@ -10,8 +10,9 @@ import { getBusinessSettings } from '@/lib/data/store';
 import { ProductDetailClient } from '@/components/shop/ProductDetailClient';
 import { generateProductSchema, generateBreadcrumbSchema, SITE_URL } from '@/lib/seo';
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+// Cache page on Edge CDN with Incremental Static Regeneration (ISR).
+// Revalidates every 60s, or on-demand when product details change in admin.
+export const revalidate = 60;
 
 interface Props {
   params: Promise<{ slug: string }>;

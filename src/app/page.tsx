@@ -18,8 +18,9 @@ import { LocationMap } from '@/components/home/LocationMap';
 import { NewsletterBar } from '@/components/home/NewsletterBar';
 import { FinalCTA } from '@/components/home/FinalCTA';
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+// Cache page on Edge CDN with Incremental Static Regeneration (ISR).
+// Revalidates every 60s, or on-demand when products are updated in the admin dashboard.
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: 'ExperienceTech | Quality Laptops, Computer Accessories & Technical Repairs in Aba Abia State',

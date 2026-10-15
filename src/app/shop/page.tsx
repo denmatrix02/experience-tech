@@ -3,8 +3,9 @@ import { Metadata } from 'next';
 import { getServerProducts, getServerCategories } from '@/lib/data/server-store';
 import { ShopClient } from '@/components/shop/ShopClient';
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+// Cache page on Edge CDN with Incremental Static Regeneration (ISR).
+// Revalidates every 60s, or on-demand when products are updated in the admin dashboard.
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: 'Shop Laptops, Parts & Accessories in Aba Abia State Nigeria',

@@ -28,6 +28,16 @@ function getDbClient() {
   return supabaseAdmin || supabase;
 }
 
+// Resilient query wrapper to guarantee serverless functions never hang or exceed Vercel execution timeouts
+async function withDbTimeout<T>(promiseLike: PromiseLike<T>, timeoutMs = 3000): Promise<T> {
+  return Promise.race([
+    Promise.resolve(promiseLike),
+    new Promise<T>((_, reject) =>
+      setTimeout(() => reject(new Error(`Supabase query timed out after ${timeoutMs}ms`)), timeoutMs)
+    ),
+  ]);
+}
+
 /* ============================================================
    1. PRODUCTS (SERVER)
    ============================================================ */
@@ -88,7 +98,10 @@ export async function getServerProducts(options?: {
         query = query.ilike('brand', options.brand);
       }
 
-      const { data, error } = await query.order('created_at', { ascending: false });
+      const { data, error } = await withDbTimeout(
+        query.order('created_at', { ascending: false }),
+        3000
+      );
 
       if (!error && Array.isArray(data) && data.length > 0) {
         list = data as Product[];
@@ -216,7 +229,10 @@ export async function getServerProductBySlug(slug: string): Promise<Product | nu
   const db = getDbClient();
   if (isSupabaseConfigured && db) {
     try {
-      const { data, error } = await db.from('products').select('*').eq('slug', slug).maybeSingle();
+      const { data, error } = await withDbTimeout(
+        db.from('products').select('*').eq('slug', slug).maybeSingle(),
+        3000
+      );
       if (!error && data) {
         const prod = data as Product;
         const categories = await getServerCategories(true);
@@ -242,11 +258,14 @@ export async function getServerProductById(id: string): Promise<Product | null> 
 
   if (isSupabaseConfigured && db) {
     try {
-      const { data, error } = await db
-        .from('products')
-        .select('*')
-        .or(`id.eq.${targetUuid},id.eq.${id}`)
-        .maybeSingle();
+      const { data, error } = await withDbTimeout(
+        db
+          .from('products')
+          .select('*')
+          .or(`id.eq.${targetUuid},id.eq.${id}`)
+          .maybeSingle(),
+        3000
+      );
 
       if (!error && data) {
         const prod = data as Product;
@@ -554,7 +573,7 @@ export async function getServerCategories(includeArchived = false): Promise<Cate
       if (!includeArchived) {
         query = query.neq('is_archived', true);
       }
-      const { data, error } = await query;
+      const { data, error } = await withDbTimeout(query, 3000);
       if (!error && Array.isArray(data) && data.length > 0) {
         list = data as Category[];
       } else if (!error && Array.isArray(data) && data.length === 0) {
