@@ -61,8 +61,13 @@ export async function getFileProducts(): Promise<Product[]> {
 }
 
 export async function saveFileProducts(products: Product[]): Promise<void> {
-  await ensureDataDir();
-  await fs.writeFile(PRODUCTS_FILE, JSON.stringify(products, null, 2), 'utf-8');
+  try {
+    await ensureDataDir();
+    await fs.writeFile(PRODUCTS_FILE, JSON.stringify(products, null, 2), 'utf-8');
+  } catch (err) {
+    // In serverless environments (e.g. Vercel), local filesystem is read-only.
+    // Persistent records are synced to Supabase database; local JSON write is safely skipped.
+  }
 }
 
 export async function getServerProducts(options?: {
@@ -559,8 +564,12 @@ export async function getFileCategories(): Promise<Category[]> {
 }
 
 export async function saveFileCategories(categories: Category[]): Promise<void> {
-  await ensureDataDir();
-  await fs.writeFile(CATEGORIES_FILE, JSON.stringify(categories, null, 2), 'utf-8');
+  try {
+    await ensureDataDir();
+    await fs.writeFile(CATEGORIES_FILE, JSON.stringify(categories, null, 2), 'utf-8');
+  } catch (err) {
+    // In serverless environments, local JSON write is safely skipped.
+  }
 }
 
 export async function getServerCategories(includeArchived = false): Promise<Category[]> {

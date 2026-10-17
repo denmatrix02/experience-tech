@@ -20,7 +20,6 @@ import {
   Link2,
   ExternalLink,
 } from 'lucide-react';
-import { autoRemoveBackgroundToWhite } from '@/lib/image-processing';
 import { Product, Category, ProductCondition, StockStatus, ProductStatus } from '@/types';
 
 interface ProductFormModalProps {
@@ -70,13 +69,11 @@ export const ProductFormModal: React.FC<ProductFormModalProps> = ({
   const [imageUrls, setImageUrls] = useState<string[]>(
     product?.images && product.images.length > 0
       ? product.images
-      : ['https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=800&q=80']
+      : []
   );
   const [newImageUrl, setNewImageUrl] = useState('');
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
-  const [autoWhiteBg, setAutoWhiteBg] = useState(true);
-  const [processingIdx, setProcessingIdx] = useState<number | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // SEO & URL Slug Automation
@@ -116,63 +113,31 @@ export const ProductFormModal: React.FC<ProductFormModalProps> = ({
     setUploadError(null);
 
     try {
-      if (autoWhiteBg) {
-        const processedUrls: string[] = [];
-        for (let i = 0; i < files.length; i++) {
-          try {
-            const whiteBgDataUrl = await autoRemoveBackgroundToWhite(files[i], { tolerance: 28, feather: 2 });
-            processedUrls.push(whiteBgDataUrl);
-          } catch {
-            const formData = new FormData();
-            formData.append('files', files[i]);
-            const res = await fetch('/api/upload', { method: 'POST', body: formData });
-            const data = await res.json();
-            if (data.urls?.[0]) processedUrls.push(data.urls[0]);
-          }
-        }
-        setImageUrls((prev) => [...prev, ...processedUrls]);
-      } else {
-        const formData = new FormData();
-        for (let i = 0; i < files.length; i++) {
-          formData.append('files', files[i]);
-        }
+      const formData = new FormData();
+      for (let i = 0; i < files.length; i++) {
+        formData.append('files', files[i]);
+      }
 
-        const res = await fetch('/api/upload', {
-          method: 'POST',
-          body: formData,
-        });
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
 
-        const data = await res.json();
-        if (!res.ok) {
-          throw new Error(data.error || 'Failed to upload image(s).');
-        }
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to upload image(s). Please try again.');
+      }
 
-        if (data.urls && Array.isArray(data.urls)) {
-          setImageUrls((prev) => [...prev, ...data.urls]);
-        }
+      if (data.urls && Array.isArray(data.urls) && data.urls.length > 0) {
+        setImageUrls((prev) => [...prev, ...data.urls]);
+      } else if (data.url) {
+        setImageUrls((prev) => [...prev, data.url]);
       }
     } catch (err: any) {
       setUploadError(err?.message || 'Error uploading file.');
     } finally {
       setIsUploading(false);
       if (fileInputRef.current) fileInputRef.current.value = '';
-    }
-  };
-
-  const handleMakeWhiteBackground = async (index: number) => {
-    try {
-      setProcessingIdx(index);
-      const targetUrl = imageUrls[index];
-      const whiteBgDataUrl = await autoRemoveBackgroundToWhite(targetUrl, { tolerance: 28, feather: 2 });
-      setImageUrls((prev) => {
-        const copy = [...prev];
-        copy[index] = whiteBgDataUrl;
-        return copy;
-      });
-    } catch (err: any) {
-      alert('Could not convert to white background: ' + (err?.message || err));
-    } finally {
-      setProcessingIdx(null);
     }
   };
 
@@ -756,32 +721,6 @@ export const ProductFormModal: React.FC<ProductFormModalProps> = ({
                 </label>
               </div>
 
-              {/* Auto White Background Feature Toggle */}
-              <div className="flex items-center justify-between p-3.5 bg-amber-50/80 border border-amber-200/90 rounded-2xl shadow-xs">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-xl bg-amber-500 text-white flex items-center justify-center font-medium text-sm shadow-xs">
-                    🪄
-                  </div>
-                  <div>
-                    <span className="text-xs font-medium text-slate-800 block">
-                      Auto-Remove Background to Studio Pure White (#FFFFFF)
-                    </span>
-                    <span className="text-[11px] text-slate-600 block">
-                      Automatically cleans photo perimeter and replaces cluttered table/room backgrounds with pure e-commerce white.
-                    </span>
-                  </div>
-                </div>
-                <label className="relative inline-flex items-center cursor-pointer shrink-0">
-                  <input
-                    type="checkbox"
-                    checked={autoWhiteBg}
-                    onChange={(e) => setAutoWhiteBg(e.target.checked)}
-                    className="sr-only peer"
-                  />
-                  <div className="w-10 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
-                </label>
-              </div>
-
               {uploadError && (
                 <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-xs text-red-600 flex items-center gap-2">
                   <AlertCircle className="w-4 h-4 shrink-0" />
@@ -881,26 +820,8 @@ export const ProductFormModal: React.FC<ProductFormModalProps> = ({
                           <div className="flex items-center gap-1.5">
                             <button
                               type="button"
-                              onClick={() => handleMakeWhiteBackground(idx)}
-                              disabled={processingIdx === idx}
-                              className="text-[10px] font-medium text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded px-2 py-0.5 inline-flex items-center gap-1 transition-colors disabled:opacity-50"
-                              title="Convert to pure studio white background"
-                            >
-                              {processingIdx === idx ? (
-                                <>
-                                  <Loader2 className="w-3 h-3 animate-spin text-amber-600" />
-                                  <span>Cleaning...</span>
-                                </>
-                              ) : (
-                                <>
-                                  <span>🪄 White BG</span>
-                                </>
-                              )}
-                            </button>
-                            <button
-                              type="button"
                               onClick={() => handleRemoveImage(idx)}
-                              className="p-1 text-red-600 hover:bg-red-50 rounded"
+                              className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                               title="Remove Photo"
                             >
                               <Trash2 className="w-4 h-4" />
@@ -1032,13 +953,18 @@ export const ProductFormModal: React.FC<ProductFormModalProps> = ({
               </span>
               <button
                 type="submit"
-                disabled={isSubmitting}
+                disabled={isSubmitting || isUploading}
                 className="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white text-xs font-medium transition-all shadow-sm flex items-center gap-2"
               >
                 {isSubmitting ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin" />
                     <span>Saving to Database...</span>
+                  </>
+                ) : isUploading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Uploading Images...</span>
                   </>
                 ) : (
                   <span>{product ? 'Save & Sync Product' : 'Publish Product to Live Website'}</span>
